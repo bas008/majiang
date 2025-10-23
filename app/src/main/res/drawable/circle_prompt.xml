@@ -1,0 +1,16 @@
+<!-- res/drawable/circle_prompt.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"> <!-- 形状为圆形 -->
+
+    <!-- 圆形边框（可选：若需要空心圆） -->
+    <stroke
+        android:width="2dp"
+    android:color="#A00000" />
+    <size
+        android:width="30dp"
+        android:height="30dp" />
+
+    <!-- 背景完全透明 -->
+    <solid android:color="@android:color/transparent" />
+
+</shape>
