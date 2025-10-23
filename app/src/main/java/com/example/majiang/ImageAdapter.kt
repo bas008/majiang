@@ -35,6 +35,8 @@ class ImageAdapter(
     private var draggedRow = -1
     private var draggedCol = -1
     private var draggedView: View? = null // 被拖拽的ImageView
+    private var changeColorView: View? = null // 被拖拽的ImageView
+
 
     private var soundPlayer: PlaySound? = null
     private var boxLeft = col_Number*row_Number
@@ -226,8 +228,12 @@ class ImageAdapter(
                                 var theRow = findV(draggedRow,newCol,draggedCol)
                                 if(theRow != -1){
                                     draggedView!!.alpha = 0.5f
+                                    changeColorView = recyclerView.layoutManager?.findViewByPosition(toPosition(theRow,newCol))
+                                    changeColorView?.alpha = 0.5f
                                 }else{
                                     draggedView!!.alpha = 1.0f
+                                    changeColorView?.alpha = 1.0f
+                                    changeColorView = null
                                 }
                             }
                         }else{
@@ -239,8 +245,12 @@ class ImageAdapter(
                                 var theCol = findH(newRow,draggedCol,draggedRow)
                                 if(theCol != -1){
                                     draggedView!!.alpha = 0.5f
+                                    changeColorView = recyclerView.layoutManager?.findViewByPosition(toPosition(newRow,theCol))
+                                    changeColorView?.alpha = 0.5f
                                 }else{
                                     draggedView!!.alpha = 1.0f
+                                    changeColorView?.alpha = 1.0f
+                                    changeColorView = null
                                 }
                             }
                         }

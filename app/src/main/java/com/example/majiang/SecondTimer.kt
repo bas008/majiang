@@ -39,9 +39,9 @@ class SecondTimer(private val callback: TimerCallback) {
     }
 
     // 停止并重置定时器
-    fun stop() {
+    fun stop() :Int {
         isRunning = false
         timerJob?.cancel()
-        elapsedSeconds = 0
+        return elapsedSeconds
     }
 }

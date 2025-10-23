@@ -1,5 +1,7 @@
 package com.example.majiang
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +20,7 @@ import android.os.Looper
 import android.view.Surface
 import android.view.View
 import com.example.fireworks.FireworksView
+
 
 class MainActivity : AppCompatActivity() {
     val tag = "Fandy_MainActivity"
@@ -41,6 +44,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var timerText: TextView
     private lateinit var timer :SecondTimer
+
+    private val PREF_NAME = "BestTimePref"
+    private val KEY_BEST_TIME = "best_victory_time"
+    private var bastTime = Int.MAX_VALUE
+    private lateinit var prefs: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -67,19 +76,24 @@ class MainActivity : AppCompatActivity() {
         adapter = ImageAdapter(recyclerView)
         adapter.setOnAdapterListener(object : ImageAdapter.OnAdapterListener {
             override fun onGameSucceed() {
+                val seconds = timer.stop()
+                if(seconds < bastTime){
+                    saveBestTime(seconds)
+                    bastTime = seconds
+                    victory.text = "       你赢啦！！！\n共用时：" + formatSecond(seconds) + "\n你创造了历史记录"
+                }else{
+                    victory.text = "       你赢啦！！！\n共用时：" + formatSecond(seconds)
+                }
                 victory.visibility = View.VISIBLE
-                victory.text = "       你赢啦！！！\n共用时：" + timerText.text
-                timer.stop()
                 startFireworks()
             }
             override fun onGameFailed() {
-                timer.stop()
+                val seconds = timer.stop()
                 victory.visibility = View.VISIBLE
-                victory.text = "       你输啦！！！\n共用时：" + timerText.text
+                victory.text = "       你输啦！！！\n共用时：" + formatSecond(seconds)
                 hintButton.isEnabled = false
                 backButton.isEnabled = false
                 shuffleButton.isEnabled = false
-//                gameOver.visibility = View.VISIBLE
             }
         })
         recyclerView.adapter = adapter
@@ -139,13 +153,18 @@ class MainActivity : AppCompatActivity() {
         timerText = findViewById<TextView>(R.id.timer)
         timer = SecondTimer(object : TimerCallback {
             override fun onTick(seconds: Int) {
-                val hour = seconds / 3600
-                val minute = (seconds / 60) % 60
-                val second = seconds % 60
-                timerText.text = String.format("%02d:%02d:%02d", hour, minute, second)
+                timerText.text = formatSecond(seconds)
             }
         })
+        prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        bastTime = getBestTime()
         timer.start()
+    }
+    private fun formatSecond(seconds: Int):String{
+        val hour = seconds / 3600
+        val minute = (seconds / 60) % 60
+        val second = seconds % 60
+        return String.format("%02d:%02d:%02d", hour, minute, second)
     }
     private fun resetGame(){
         hintLeft = 5
@@ -195,5 +214,14 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         // 清除延迟任务，避免内存泄漏
         handler.removeCallbacksAndMessages(null)
+    }
+    private fun saveBestTime(seconds: Int) {
+        prefs.edit().putInt(KEY_BEST_TIME, seconds).apply()
+    }
+
+    // 读取最佳胜利时间（返回总秒数，-1表示未存储）
+    private fun getBestTime(): Int {
+        Log.d(tag,"KEY_BEST_TIME=${prefs.getInt(KEY_BEST_TIME, Int.MAX_VALUE)}")
+        return prefs.getInt(KEY_BEST_TIME, Int.MAX_VALUE)
     }
 }
