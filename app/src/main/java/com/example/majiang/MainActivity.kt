@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var timerText: TextView
     private lateinit var timer :SecondTimer
-
+    private lateinit var bestTimeView :TextView
     private val PREF_NAME = "BestTimePref"
     private val KEY_BEST_TIME = "best_victory_time"
     private var bastTime = Int.MAX_VALUE
@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     saveBestTime(seconds)
                     bastTime = seconds
                     victory.text = "       你赢啦！！！\n共用时：" + formatSecond(seconds) + "\n你创造了历史记录"
+                    bestTimeView.text = "最佳用时  " + formatSecond(bastTime)
                 }else{
                     victory.text = "       你赢啦！！！\n共用时：" + formatSecond(seconds)
                 }
@@ -158,7 +159,12 @@ class MainActivity : AppCompatActivity() {
         })
         prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         bastTime = getBestTime()
-        findViewById<TextView>(R.id.besttime).text = "最佳用时  "+formatSecond(bastTime)
+        bestTimeView = findViewById<TextView>(R.id.besttime)
+        if (bastTime == Int.MAX_VALUE) {
+            bestTimeView.text = "最佳用时  " + formatSecond(0)
+        }else{
+            bestTimeView.text = "最佳用时  " + formatSecond(bastTime)
+        }
         timer.start()
     }
     private fun formatSecond(seconds: Int):String{
