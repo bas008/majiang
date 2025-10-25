@@ -228,6 +228,8 @@ class ImageAdapter(
                                 var theRow = findV(draggedRow,newCol,draggedCol)
                                 if(theRow != -1){
                                     draggedView!!.alpha = 0.5f
+                                    changeColorView?.alpha = 1.0f
+                                    changeColorView = null
                                     changeColorView = recyclerView.layoutManager?.findViewByPosition(toPosition(theRow,newCol))
                                     changeColorView?.alpha = 0.5f
                                 }else{
@@ -245,6 +247,8 @@ class ImageAdapter(
                                 var theCol = findH(newRow,draggedCol,draggedRow)
                                 if(theCol != -1){
                                     draggedView!!.alpha = 0.5f
+                                    changeColorView?.alpha = 1.0f
+                                    changeColorView = null
                                     changeColorView = recyclerView.layoutManager?.findViewByPosition(toPosition(newRow,theCol))
                                     changeColorView?.alpha = 0.5f
                                 }else{
