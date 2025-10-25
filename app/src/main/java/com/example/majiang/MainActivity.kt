@@ -158,6 +158,7 @@ class MainActivity : AppCompatActivity() {
         })
         prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         bastTime = getBestTime()
+        findViewById<TextView>(R.id.besttime).text = "最佳用时  "+formatSecond(bastTime)
         timer.start()
     }
     private fun formatSecond(seconds: Int):String{
